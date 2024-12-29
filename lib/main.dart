@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pickitup/screens/drop_off_page.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:pickitup/screens/become_a_member.dart';
+import 'package:pickitup/screens/pickup_schedule.dart';
+import 'package:pickitup/screens/urgent_pickup_page.dart';
+import 'package:pickitup/screens/drop_off_page.dart';
+import 'package:pickitup/screens/login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,17 +16,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        useMaterial3: true, // Mengaktifkan Material Design v3 (Material You)
-        textTheme: GoogleFonts.balooBhai2TextTheme(), // Gunakan Google Fonts
-        appBarTheme: AppBarTheme(
-          titleTextStyle: GoogleFonts.balooBhai2(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-          ),
-        ),
+        useMaterial3: true,
+        textTheme: GoogleFonts.balooBhai2TextTheme(),
       ),
-      home: DropOffPage(),
+      initialRoute: '/', // Route awal
+
+      /*
+        Routes: Inisialisasi semua yang berkaitan dengan
+      */
+      routes: {
+        '/': (context) => LoginPage(), // Halaman login sebagai default
+        '/home': (context) => UrgentPickUpPage(), // Halaman setelah login
+        '/schedule': (context) => PickUpSchedulePage(), // Halaman jadwal
+        '/member': (context) => BecomeAMember(), // Halaman keanggotaan
+        '/dropoff': (context) => DropOffPage(), // Halaman drop off
+      },
     );
   }
 }

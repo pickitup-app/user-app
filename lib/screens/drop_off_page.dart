@@ -8,7 +8,7 @@ class DropOffPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Header Section
             Container(
@@ -39,10 +39,11 @@ class DropOffPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "Come to Pick It Up",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -52,6 +53,7 @@ class DropOffPage extends StatelessWidget {
                   SizedBox(height: 4),
                   Text(
                     "for your waste drop-off",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.brown,
@@ -65,10 +67,11 @@ class DropOffPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "Where Can I Drop Off My Waste?",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -77,6 +80,7 @@ class DropOffPage extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Map 1
                       Expanded(
@@ -88,7 +92,7 @@ class DropOffPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                                 image: DecorationImage(
                                   image: AssetImage(
-                                      'assets/images/map1.png'), // Ganti dengan path gambar map 1
+                                      'assets/images/maps-1.png'), // Ganti dengan path gambar map 1
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -116,7 +120,7 @@ class DropOffPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                                 image: DecorationImage(
                                   image: AssetImage(
-                                      'assets/images/map2.png'), // Ganti dengan path gambar map 2
+                                      'assets/images/maps-2.png'), // Ganti dengan path gambar map 2
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -143,7 +147,7 @@ class DropOffPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Drop-Off Time
                   _buildInfoSection(
@@ -178,10 +182,11 @@ class DropOffPage extends StatelessWidget {
 
   Widget _buildInfoSection({required String title, required String content}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           title,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -191,6 +196,7 @@ class DropOffPage extends StatelessWidget {
         SizedBox(height: 8),
         Text(
           content,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,
             color: Colors.brown,

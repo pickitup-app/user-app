@@ -13,6 +13,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          // Set height based on the current device height
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             color: Color(0xFFF1FCE4), // Background color sesuai desain
           ),
