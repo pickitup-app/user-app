@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class HeaderComponent extends StatelessWidget {
   @override
@@ -21,7 +22,7 @@ class HeaderComponent extends StatelessWidget {
             child: Center(
               child: Text(
                 "Pick Up",
-                style: TextStyle(
+                style: GoogleFonts.balooBhai2(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.green.shade800,

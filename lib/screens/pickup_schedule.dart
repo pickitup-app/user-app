@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import 'package:pickitup/components/header_component.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class PickUpSchedulePage extends StatelessWidget {
   @override
@@ -64,11 +65,12 @@ class PickUpSchedulePage extends StatelessWidget {
         leading: Icon(Icons.calendar_today, color: Colors.green.shade800),
         title: Text(
           'Next Pick Up',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style:
+              GoogleFonts.balooBhai2(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           'Monday, 11 November 2024',
-          style: TextStyle(color: Colors.green.shade800),
+          style: GoogleFonts.balooBhai2(color: Colors.green.shade800),
         ),
       ),
     );
@@ -81,10 +83,10 @@ class PickUpSchedulePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text('Schedule',
-              style: TextStyle(
+              style: GoogleFonts.balooBhai2(
                   fontWeight: FontWeight.bold, color: Colors.green.shade800)),
-          Text('Ongoing', style: TextStyle(color: Colors.grey)),
-          Text('History', style: TextStyle(color: Colors.grey)),
+          Text('Ongoing', style: GoogleFonts.balooBhai2(color: Colors.grey)),
+          Text('History', style: GoogleFonts.balooBhai2(color: Colors.grey)),
         ],
       ),
     );
@@ -161,7 +163,7 @@ class PickUpSchedulePage extends StatelessWidget {
               children: [
                 Text(
                   isCompleted ? 'Picked Up Today' : 'Scheduled Pick Up',
-                  style: TextStyle(
+                  style: GoogleFonts.balooBhai2(
                     color: isCompleted ? Colors.white : Colors.green.shade800,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -169,13 +171,13 @@ class PickUpSchedulePage extends StatelessWidget {
                 ),
                 Text(
                   date,
-                  style: TextStyle(
+                  style: GoogleFonts.balooBhai2(
                     color: isCompleted ? Colors.white : Colors.black,
                   ),
                 ),
                 Text(
                   time,
-                  style: TextStyle(
+                  style: GoogleFonts.balooBhai2(
                     color: isCompleted ? Colors.white : Colors.black54,
                   ),
                 ),
@@ -191,8 +193,8 @@ class PickUpSchedulePage extends StatelessWidget {
               ),
               child: Text(
                 'URGENT',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: GoogleFonts.balooBhai2(
+                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
         ],

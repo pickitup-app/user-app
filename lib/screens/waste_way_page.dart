@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart'
     as custom_nav; // Import navbar
 
@@ -30,7 +31,7 @@ class WasteWayPage extends StatelessWidget {
                 Text(
                   "Choose Your\nWaste Way Method",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: GoogleFonts.balooBhai2(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.green.shade800,
@@ -41,6 +42,7 @@ class WasteWayPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     // Aksi saat tombol Drop Off ditekan
+                    Navigator.pushNamed(context, '/dropoff');
                   },
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -65,7 +67,7 @@ class WasteWayPage extends StatelessWidget {
                         SizedBox(height: 8),
                         Text(
                           "DROP OFF",
-                          style: TextStyle(
+                          style: GoogleFonts.balooBhai2(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.green.shade800,
@@ -79,6 +81,7 @@ class WasteWayPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     // Aksi saat tombol Pick Up ditekan
+                    Navigator.pushNamed(context, '/pickup_schedule');
                   },
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -103,7 +106,7 @@ class WasteWayPage extends StatelessWidget {
                         SizedBox(height: 8),
                         Text(
                           "PICK UP",
-                          style: TextStyle(
+                          style: GoogleFonts.balooBhai2(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.green.shade800,

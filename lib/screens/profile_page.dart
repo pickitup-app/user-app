@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart'
     as custom_nav; // Import navbar
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -38,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                     SizedBox(height: 10),
                     Text(
                       'Charlie Puth',
-                      style: TextStyle(
+                      style: GoogleFonts.balooBhai2(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.green.shade800,
@@ -47,7 +48,7 @@ class ProfilePage extends StatelessWidget {
                     SizedBox(height: 4),
                     Text(
                       '10000 points',
-                      style: TextStyle(
+                      style: GoogleFonts.balooBhai2(
                         fontSize: 16,
                         color: Colors.brown,
                       ),
@@ -160,7 +161,7 @@ class ProfilePage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: Text(
                             'Log Out',
-                            style: TextStyle(
+                            style: GoogleFonts.balooBhai2(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
@@ -234,7 +235,7 @@ class _InfoSection extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 title,
-                style: TextStyle(
+                style: GoogleFonts.balooBhai2(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.green.shade800,

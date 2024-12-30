@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,16 +39,16 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20),
               Text(
                 'Log in',
-                style: TextStyle(
+                style: GoogleFonts.balooBhai2(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green.shade800,
+                  color: Color(0XFF6D9773),
                 ),
               ),
               SizedBox(height: 8),
               Text(
                 'Enter Your Account',
-                style: TextStyle(
+                style: GoogleFonts.balooBhai2(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -88,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                 alignment: Alignment.centerRight,
                 child: Text(
                   'Forgot Password',
-                  style: TextStyle(color: Colors.green.shade800),
+                  style: GoogleFonts.balooBhai2(color: Colors.green.shade800),
                 ),
               ),
               SizedBox(height: 20),
@@ -97,17 +98,19 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade800,
+                    backgroundColor: Color(0XFF6D9773),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/home');
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: Text(
                       'Log In',
-                      style: TextStyle(
+                      style: GoogleFonts.balooBhai2(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
@@ -117,10 +120,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 10),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/register');
+                },
                 child: Text(
                   'Sign Up',
-                  style: TextStyle(color: Colors.green.shade800),
+                  style: GoogleFonts.balooBhai2(color: Color(0XFF6D9773)),
                 ),
               ),
             ],

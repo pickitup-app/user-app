@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class BottomNavigationBar extends StatelessWidget {
   @override
@@ -28,14 +29,18 @@ class BottomNavigationBar extends StatelessWidget {
                   svgPath: 'assets/icons/home.svg',
                   color: Color(0XFF6D9773), // Custom color for Home icon
                   label: 'Home',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/home');
+                  },
                 ),
                 // Waste Icon with Text
                 _buildSvgWithText(
                   svgPath: 'assets/icons/remove_trash.svg',
                   color: Color(0XFF6D9773), // Custom color for Waste icon
                   label: 'Waste Way',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/wasteway');
+                  },
                 ),
                 // Spacer for Floating Button
                 SizedBox(width: 48), // Beri ruang untuk FAB
@@ -51,7 +56,9 @@ class BottomNavigationBar extends StatelessWidget {
                   svgPath: 'assets/icons/profile.svg',
                   color: Color(0XFF6D9773), // Custom color for Profile icon
                   label: 'Profile',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/profile');
+                  },
                 ),
               ],
             ),
@@ -96,7 +103,8 @@ class BottomNavigationBar extends StatelessWidget {
         SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 12, color: Colors.green.shade800),
+          style: GoogleFonts.balooBhai2(
+              fontSize: 12, color: Colors.green.shade800),
         ),
       ],
     );

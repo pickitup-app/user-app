@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -14,6 +15,8 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          // Set height based on the current device height
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             color: Color(0xFFF1FCE4), // Background color sesuai desain
           ),
@@ -30,23 +33,23 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(height: 20),
               // Gambar truk
               Image.asset(
-                'assets/images/recycle_truck.png', // Path ke gambar truk
-                height: 200,
+                'assets/images/bg-register.png', // Path ke gambar truk
+                height: 100,
                 fit: BoxFit.contain,
               ),
               SizedBox(height: 20),
               Text(
                 'Sign Up',
-                style: TextStyle(
+                style: GoogleFonts.balooBhai2(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green.shade800,
+                  color: Color(0XFF6D9773),
                 ),
               ),
               SizedBox(height: 8),
               Text(
                 'Create your account',
-                style: TextStyle(
+                style: GoogleFonts.balooBhai2(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -129,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade800,
+                    backgroundColor: Color(0XFF6D9773),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -139,7 +142,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: Text(
                       'Sign Up',
-                      style: TextStyle(
+                      style: GoogleFonts.balooBhai2(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
@@ -149,10 +152,12 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               SizedBox(height: 10),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: Text(
                   'Log in',
-                  style: TextStyle(color: Colors.green.shade800),
+                  style: GoogleFonts.balooBhai2(color: Color(0XFF6D9773)),
                 ),
               ),
             ],

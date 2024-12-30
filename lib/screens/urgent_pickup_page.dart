@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import 'package:pickitup/components/header_component.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class UrgentPickUpPage extends StatelessWidget {
   @override
@@ -49,21 +50,24 @@ class UrgentPickUpPage extends StatelessWidget {
         children: [
           Text(
             'Price',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: GoogleFonts.balooBhai2(
+                fontSize: 16, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
           _buildTextField('Rp.100.000,00'),
           SizedBox(height: 16),
           Text(
             'Payment Method',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: GoogleFonts.balooBhai2(
+                fontSize: 16, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
           _buildTextField('gopay', prefixIcon: Icons.payment),
           SizedBox(height: 16),
           Text(
             'Time',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: GoogleFonts.balooBhai2(
+                fontSize: 16, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8),
           _buildDropdownField(),
@@ -77,7 +81,8 @@ class UrgentPickUpPage extends StatelessWidget {
               onPressed: () {},
               child: Text(
                 'Order',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style:
+                    GoogleFonts.balooBhai2(fontSize: 18, color: Colors.white),
               ),
             ),
           ),

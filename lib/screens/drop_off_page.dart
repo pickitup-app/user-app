@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart'
     as custom_nav; // Import navbar
+import 'package:pickitup/components/header_component.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class DropOffPage extends StatelessWidget {
   @override
@@ -10,30 +12,7 @@ class DropOffPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Header Section
-            Container(
-              color: Color(0xFFF1FCE4), // Light green background
-              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context); // Aksi tombol back
-                    },
-                    child: Icon(Icons.arrow_back, color: Colors.brown),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    "Drop Off",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green.shade800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            HeaderComponent(),
             SizedBox(height: 16),
             // Title Section
             Padding(
@@ -44,7 +23,7 @@ class DropOffPage extends StatelessWidget {
                   Text(
                     "Come to Pick It Up",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.balooBhai2(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.green.shade800,
@@ -54,13 +33,19 @@ class DropOffPage extends StatelessWidget {
                   Text(
                     "for your waste drop-off",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.balooBhai2(
                       fontSize: 16,
                       color: Colors.brown,
                     ),
                   ),
                 ],
               ),
+            ),
+            Image.asset(
+              'assets/images/header-dropoff.png', // Ganti dengan path gambar drop-off
+              fit: BoxFit.cover,
+              height: 200,
+              width: double.infinity,
             ),
             SizedBox(height: 24),
             // Maps Section
@@ -72,7 +57,7 @@ class DropOffPage extends StatelessWidget {
                   Text(
                     "Where Can I Drop Off My Waste?",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.balooBhai2(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.green.shade800,
@@ -101,7 +86,7 @@ class DropOffPage extends StatelessWidget {
                             Text(
                               "Pick It Up Headquarters\nJl. Raya Sentul No. 88,\nRT 02/RW 07, Sentul,\nBabakan Madang, Bogor,\nJawa Barat 16810, Indonesia",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: GoogleFonts.balooBhai2(
                                 fontSize: 12,
                                 color: Colors.brown,
                               ),
@@ -129,7 +114,7 @@ class DropOffPage extends StatelessWidget {
                             Text(
                               "Pick It Up Headquarters\nJl. Raya Sentul No. 88,\nRT 02/RW 07, Sentul,\nBabakan Madang, Bogor,\nJawa Barat 16810, Indonesia",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: GoogleFonts.balooBhai2(
                                 fontSize: 12,
                                 color: Colors.brown,
                               ),
@@ -187,7 +172,7 @@ class DropOffPage extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: GoogleFonts.balooBhai2(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.green.shade800,
@@ -197,7 +182,7 @@ class DropOffPage extends StatelessWidget {
         Text(
           content,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: GoogleFonts.balooBhai2(
             fontSize: 14,
             color: Colors.brown,
           ),
