@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:google_fonts/google_fonts.dart';
+import '../services/api_service.dart'; // Import ApiService
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -9,54 +10,48 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool _isPasswordHidden = true;
   bool _isConfirmPasswordHidden = true;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final ApiService _apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          // Set height based on the current device height
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-            color: Color(0xFFF1FCE4), // Background color sesuai desain
+            color: Color(0xFFF1FCE4),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 50),
-              // Logo PU
-              Image.asset(
-                'assets/images/logo.png',
-                height: 100,
-              ),
+              Image.asset('assets/images/logo.png', height: 100),
               SizedBox(height: 20),
-              // Gambar truk
-              Image.asset(
-                'assets/images/bg-register.png', // Path ke gambar truk
-                height: 100,
-                fit: BoxFit.contain,
-              ),
+              Image.asset('assets/images/bg-register.png',
+                  height: 100, fit: BoxFit.contain),
               SizedBox(height: 20),
               Text(
                 'Sign Up',
                 style: GoogleFonts.balooBhai2(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0XFF6D9773),
-                ),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0XFF6D9773)),
               ),
               SizedBox(height: 8),
-              Text(
-                'Create your account',
-                style: GoogleFonts.balooBhai2(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
+              Text('Create your account',
+                  style:
+                      GoogleFonts.balooBhai2(fontSize: 16, color: Colors.grey)),
               SizedBox(height: 20),
+
               // Form Name
               TextFormField(
+                controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Name',
                   hintText: 'Enter your name',
@@ -65,8 +60,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               SizedBox(height: 16),
+
               // Form Email
               TextFormField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'E-mail',
                   hintText: 'Enter your email',
@@ -75,8 +72,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               SizedBox(height: 16),
+
               // Form Phone Number
               TextFormField(
+                controller: _phoneController,
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   hintText: 'Enter your phone number',
@@ -85,8 +84,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               SizedBox(height: 16),
+
               // Form Password
               TextFormField(
+                controller: _passwordController,
                 obscureText: _isPasswordHidden,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -106,8 +107,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               SizedBox(height: 16),
+
               // Form Confirm Password
               TextFormField(
+                controller: _confirmPasswordController,
                 obscureText: _isConfirmPasswordHidden,
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
@@ -127,6 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               SizedBox(height: 20),
+
               // Sign Up Button
               SizedBox(
                 width: double.infinity,
@@ -137,7 +141,29 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (_passwordController.text !=
+                        _confirmPasswordController.text) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Passwords do not match!')));
+                    } else {
+                      final response = await _apiService.register(
+                        _nameController.text,
+                        _emailController.text,
+                        _phoneController.text,
+                        _passwordController.text,
+                      );
+
+                      if (response['success']) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Registration successful')));
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(response['message'])));
+                      }
+                    }
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: Text(

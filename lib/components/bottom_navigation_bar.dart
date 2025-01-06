@@ -49,7 +49,9 @@ class BottomNavigationBar extends StatelessWidget {
                   svgPath: 'assets/icons/chat_exp.svg',
                   color: Color(0XFF6D9773), // Custom color for Expire icon
                   label: 'Expire',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/chat');
+                  },
                 ),
                 // Profile Icon with Text
                 _buildSvgWithText(

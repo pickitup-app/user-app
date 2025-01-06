@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 import 'package:pickitup/screens/become_a_member.dart';
+import 'package:pickitup/screens/chat_expirio.dart';
 import 'package:pickitup/screens/pickup_schedule.dart';
 import 'package:pickitup/screens/profile_page.dart';
 import 'package:pickitup/screens/urgent_pickup_page.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/urgentpickup': (context) =>
             UrgentPickUpPage(), // Halaman urgent pickup
         '/pickup_schedule': (context) => PickUpSchedulePage(), // Halaman jadwal
+        '/chat': (context) => ChatExpirioScreen(), // Halaman chat
       },
     );
   }

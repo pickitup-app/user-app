@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:google_fonts/google_fonts.dart';
+import '../services/api_service.dart'; // Import layanan API
+import '../utils/constants.dart'; // Import konstanta
 
 class LoginPage extends StatefulWidget {
   @override
@@ -7,35 +9,63 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordHidden = true;
+  bool _isLoading = false;
+
+  // Fungsi untuk memproses login
+  void _login() async {
+    // Validasi input
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill in all fields.")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Panggil API untuk login
+    final response = await ApiService().login(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response['success']) {
+      // Navigasi ke halaman home jika login berhasil
+      Navigator.pushNamed(context, '/home');
+    } else {
+      // Tampilkan pesan error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'] ?? 'Login failed')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          // Set height based on the current device height
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-            color: Color(0xFFF1FCE4), // Background color sesuai desain
+            color: Color(0xFFF1FCE4),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 50),
-              // Logo PU
-              Image.asset(
-                'assets/images/logo.png',
-                height: 100,
-              ),
+              Image.asset('assets/images/logo.png', height: 100),
               SizedBox(height: 20),
-              // Gambar truk
-              Image.asset(
-                'assets/images/recycle_truck.png', // Path ke gambar truk
-                height: 200,
-                fit: BoxFit.contain,
-              ),
+              Image.asset('assets/images/recycle_truck.png', height: 200),
               SizedBox(height: 20),
               Text(
                 'Log in',
@@ -56,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20),
               // Form Email
               TextFormField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   hintText: 'Enter your email',
@@ -66,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 16),
               // Form Password
               TextFormField(
+                controller: _passwordController,
                 obscureText: _isPasswordHidden,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -103,19 +135,20 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/home');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Text(
-                      'Log In',
-                      style: GoogleFonts.balooBhai2(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _login,
+                  child: _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: Text(
+                            'Log In',
+                            style: GoogleFonts.balooBhai2(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               SizedBox(height: 10),
