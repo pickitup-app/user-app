@@ -10,6 +10,7 @@ import 'package:pickitup/screens/login_page.dart';
 import 'package:pickitup/screens/register_page.dart';
 import 'package:pickitup/screens/home_page.dart';
 import 'package:pickitup/screens/waste_way_page.dart';
+import 'package:pickitup/screens/scan_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
             UrgentPickUpPage(), // Halaman urgent pickup
         '/pickup_schedule': (context) => PickUpSchedulePage(), // Halaman jadwal
         '/chat': (context) => ChatExpirioScreen(), // Halaman chat
+        '/scan': (context) => ScanPage(), // Halaman scan
       },
     );
   }

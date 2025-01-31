@@ -70,7 +70,9 @@ class BottomNavigationBar extends StatelessWidget {
             top: -20, // Mengatur overflow
             left: MediaQuery.of(context).size.width / 2 - 28,
             child: FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/scan');
+              },
               backgroundColor: Colors.green.shade800,
               child: Icon(Icons.qr_code_scanner, color: Colors.white),
               shape: CircleBorder(), // Ensures the FAB is circular
