@@ -48,7 +48,8 @@ class _ChatExpirioScreenState extends State<ChatExpirioScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60), // Tinggi header
-        child: header.HeaderComponent(), // HeaderComponent dipanggil di sini
+        child: header.HeaderComponent(
+            "Expirio"), // HeaderComponent dipanggil di sini
       ),
       body: Column(
         children: [

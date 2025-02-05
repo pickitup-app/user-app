@@ -20,103 +20,110 @@ class WasteWayPage extends StatelessWidget {
             ),
           ),
           // Content
-          Center(
-            // Gunakan Center untuk menempatkan elemen di tengah
-            child: Column(
-              mainAxisSize: MainAxisSize
-                  .min, // Minimize space to center content vertically
-              children: [
-                SizedBox(height: 50), // Spasi untuk header
-                // Header Title
-                Text(
-                  "Choose Your\nWaste Way Method",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.balooBhai2(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green.shade800,
-                  ),
-                ),
-                SizedBox(height: 40),
-                // Drop Off Button
-                GestureDetector(
-                  onTap: () {
-                    // Aksi saat tombol Drop Off ditekan
-                    Navigator.pushNamed(context, '/dropoff');
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
+          Align(
+            alignment: const Alignment(0, -0.62),
+            child: SingleChildScrollView(
+              // Membuat konten scrollable jika dibutuhkan
+              child: Column(
+                mainAxisSize: MainAxisSize
+                    .min, // Minimize space to center content vertically
+                children: [
+                  SizedBox(
+                      height: 30), // Mengurangi spasi atas agar lebih ke atas
+                  // Header Title
+                  Text(
+                    "Choose Your\nWaste Way Method",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.balooBhai2(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green.shade800,
                     ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/icons/dropoff.png', // Ganti dengan path gambar Drop Off
-                          height: 120,
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "DROP OFF",
-                          style: GoogleFonts.balooBhai2(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green.shade800,
+                  ),
+                  SizedBox(
+                      height: 20), // Mengurangi spasi antar judul dan tombol
+                  // Drop Off Button
+                  GestureDetector(
+                    onTap: () {
+                      // Aksi saat tombol Drop Off ditekan
+                      Navigator.pushNamed(context, '/dropoff');
+                    },
+                    child: Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Pick Up Button
-                GestureDetector(
-                  onTap: () {
-                    // Aksi saat tombol Pick Up ditekan
-                    Navigator.pushNamed(context, '/pickup_schedule');
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/icons/pickup.png', // Ganti dengan path gambar Pick Up
-                          height: 120,
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "PICK UP",
-                          style: GoogleFonts.balooBhai2(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green.shade800,
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/icons/dropoff.png', // Ganti dengan path gambar Drop Off
+                            height: 120,
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 8),
+                          Text(
+                            "DROP OFF",
+                            style: GoogleFonts.balooBhai2(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green.shade800,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  // Pick Up Button
+                  GestureDetector(
+                    onTap: () {
+                      // Aksi saat tombol Pick Up ditekan
+                      Navigator.pushNamed(context, '/pickup_schedule');
+                    },
+                    child: Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/icons/pickup.png', // Ganti dengan path gambar Pick Up
+                            height: 120,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "PICK UP",
+                            style: GoogleFonts.balooBhai2(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green.shade800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

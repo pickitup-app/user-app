@@ -12,7 +12,7 @@ class DropOffPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            HeaderComponent(),
+            HeaderComponent("Drop Off"),
             SizedBox(height: 16),
             // Title Section
             Padding(

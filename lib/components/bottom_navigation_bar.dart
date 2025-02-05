@@ -67,7 +67,7 @@ class BottomNavigationBar extends StatelessWidget {
           ),
           // FloatingActionButton in the center
           Positioned(
-            top: -20, // Mengatur overflow
+            top: -10, // Mengatur overflow
             left: MediaQuery.of(context).size.width / 2 - 28,
             child: FloatingActionButton(
               onPressed: () {

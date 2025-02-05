@@ -9,7 +9,7 @@ class UrgentPickUpPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          HeaderComponent(),
+          HeaderComponent("Urgent Pick-Up"),
           Expanded(
             child: Column(
               children: [

@@ -9,7 +9,7 @@ class PickUpSchedulePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          HeaderComponent(),
+          HeaderComponent("Pick Up Schedule"),
           Expanded(
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -42,7 +42,7 @@ class _ScanPageState extends State<ScanPage> {
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Container(
           width: double.infinity,
-          child: header.HeaderComponent(),
+          child: header.HeaderComponent("Scan"),
         ),
       ),
       backgroundColor: Colors.grey[200],

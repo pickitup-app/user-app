@@ -66,7 +66,7 @@ class ApiService {
           'email': email,
           'phone_number': phoneNumber,
           'password': password,
-          'device_name': androidInfo.model,
+          'device_name': androidInfo.model, // Mengirimkan device_name
         }),
       );
 
@@ -81,6 +81,8 @@ class ApiService {
         await prefs.setString('user_name', userData['name']);
         await prefs.setString('user_email', userData['email']);
         await prefs.setString('user_phone_number', userData['phone_number']);
+        await prefs.setString('user_is_subscribed', userData['is_subscribed']);
+        await prefs.setString('valid_until', userData['valid_until']);
 
         return {
           'success': true,

@@ -157,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (response['success']) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Registration successful')));
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/home');
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(response['message'])));

@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(), // Halaman setelah login
         '/profile': (context) => ProfilePage(), // Halaman jadwal
         '/wasteway': (context) => WasteWayPage(), // Halaman keanggotaan
-
+        '/becomeamember': (context) => BecomeAMember(),
         // Halaman jadwal
         '/dropoff': (context) => DropOffPage(), // Halaman drop off
         '/urgentpickup': (context) =>

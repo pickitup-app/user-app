@@ -1,189 +1,251 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import 'package:pickitup/components/header_component.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:google_fonts/google_fonts.dart';
 
-class BecomeAMember extends StatelessWidget {
+class BecomeAMember extends StatefulWidget {
+  const BecomeAMember({Key? key}) : super(key: key);
+
+  @override
+  _BecomeAMemberState createState() => _BecomeAMemberState();
+}
+
+class _BecomeAMemberState extends State<BecomeAMember> {
+  int _selectedPaymentMethod =
+      -1; // Index opsi payment method yang dipilih (-1 = belum ada yang dipilih)
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          HeaderComponent(),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              children: [
-                _buildNextPickUpSection(),
-                _buildScheduleTab(),
-                _buildTimelineItem(
-                  isCompleted: true,
-                  child: _buildPickUpItem(
-                    date: 'Sunday, 10 November 2024',
-                    time: '05:00-06:00',
-                    isCompleted: true,
-                  ),
-                ),
-                _buildTimelineItem(
-                  child: _buildPickUpItem(
-                    date: 'Tuesday, 12 November 2024',
-                    time: '05:00-06:00',
-                  ),
-                ),
-                _buildTimelineItem(
-                  child: _buildPickUpItem(
-                    date: 'Thursday, 14 November 2024',
-                    time: '05:00-06:00',
-                  ),
-                ),
-                _buildTimelineItem(
-                  child: _buildPickUpItem(
-                    date: 'Saturday, 16 November 2024',
-                    time: '05:00-06:00',
-                  ),
-                ),
-                _buildTimelineItem(
-                  child: _buildPickUpItem(
-                    date: 'Sunday, 17 November 2024',
-                    time: '05:00-06:00',
-                    isUrgent: true,
-                  ),
-                ),
-              ],
+      // Background menggunakan warna dari ProfilePage
+      backgroundColor: const Color(0xFFF1FCE4),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: HeaderComponent("Become A Member"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Gambar header (tidak menggunakan padding)
+            Image.asset(
+              'assets/images/wp-becomeamember.png',
+              fit: BoxFit.cover,
+              width: double.infinity,
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            // Container form dengan style yang mengadaptasi desain dari ProfilePage
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4.0,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Judul halaman dan subjudul
+                    Text(
+                      'Become a member',
+                      style: GoogleFonts.balooBhai2(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Get regular pick up',
+                      style: GoogleFonts.balooBhai2(
+                          fontSize: 16, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Bagian Address
+                    Text(
+                      'Address',
+                      style: GoogleFonts.balooBhai2(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Street Address',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'RT',
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 15,
+                                horizontal: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'RW',
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 15,
+                                horizontal: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Postal Code',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Bagian Payment
+                    Text(
+                      'Payment',
+                      style: GoogleFonts.balooBhai2(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Upcoming Charges',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Starting Date',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Bagian Payment Method dengan tampilan grid (2 per baris)
+                    Text(
+                      'Payment Method',
+                      style: GoogleFonts.balooBhai2(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio:
+                          2.5, // Menjadikan sel lebih lebar sehingga tingginya lebih pendek
+                      shrinkWrap: true,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        _paymentMethodOption('assets/icons/bca-logo-va.png', 0),
+                        _paymentMethodOption('assets/icons/ovo-logo-va.png', 1),
+                        _paymentMethodOption('assets/icons/gopay-va.png', 2),
+                        _paymentMethodOption('assets/icons/spay-va.png', 3),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Tombol Subscribe dengan teks berwarna putih
+                    ElevatedButton(
+                      onPressed: () {
+                        // Logika untuk subscribe
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        textStyle: GoogleFonts.balooBhai2(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      child: const Text('Subscribe'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
       bottomNavigationBar: custom_nav.BottomNavigationBar(),
     );
   }
 
-  Widget _buildNextPickUpSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        leading: Icon(Icons.calendar_today, color: Colors.green.shade800),
-        title: Text(
-          'Next Pick Up',
-          style:
-              GoogleFonts.balooBhai2(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text('Monday, 11 November 2024',
-            style: GoogleFonts.balooBhai2(color: Colors.green.shade800)),
-      ),
-    );
-  }
-
-  Widget _buildScheduleTab() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text('Schedule',
-              style: GoogleFonts.balooBhai2(
-                  fontWeight: FontWeight.bold, color: Colors.green.shade800)),
-          Text('Ongoing', style: GoogleFonts.balooBhai2(color: Colors.grey)),
-          Text('History', style: GoogleFonts.balooBhai2(color: Colors.grey)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimelineItem({required Widget child, bool isCompleted = false}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            Container(
-              width: 16,
-              height: 16,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isCompleted ? Colors.green : Colors.grey,
-              ),
-            ),
-            Container(
-              width: 4,
-              height: 60,
-              color: isCompleted ? Colors.green : Colors.grey.shade300,
-            ),
-          ],
-        ),
-        SizedBox(width: 12),
-        Expanded(child: child),
-      ],
-    );
-  }
-
-  Widget _buildPickUpItem({
-    required String date,
-    required String time,
-    bool isCompleted = false,
-    bool isUrgent = false,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isCompleted ? Colors.green.shade800 : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 6,
-            offset: Offset(0, 2),
+  // Widget untuk opsi Payment Method yang dapat diklik (selector)
+  Widget _paymentMethodOption(String assetPath, int index) {
+    bool isSelected = _selectedPaymentMethod == index;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedPaymentMethod = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green.shade100 : Colors.white,
+          border: Border.all(
+            color: isSelected ? Colors.green : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
           ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.event,
-              color: isCompleted ? Colors.white : Colors.green.shade800),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isCompleted ? 'Picked Up Today' : 'Scheduled Pick Up',
-                  style: GoogleFonts.balooBhai2(
-                    color: isCompleted ? Colors.white : Colors.green.shade800,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  date,
-                  style: GoogleFonts.balooBhai2(
-                    color: isCompleted ? Colors.white : Colors.black,
-                  ),
-                ),
-                Text(
-                  time,
-                  style: GoogleFonts.balooBhai2(
-                    color: isCompleted ? Colors.white : Colors.black54,
-                  ),
-                ),
-              ],
-            ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Image.asset(
+            assetPath,
+            width: 60,
           ),
-          if (isUrgent)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                'URGENT',
-                style: GoogleFonts.balooBhai2(
-                    color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

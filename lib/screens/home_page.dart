@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import '../services/api_service.dart'; // Import ApiService
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,13 +23,36 @@ class HomePage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Hello Charlie',
-                        style: GoogleFonts.balooBhai2(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF8A6D3B),
-                        ),
+                      // FutureBuilder untuk menampilkan nama user
+                      FutureBuilder<Map<String, String?>>(
+                        future: ApiService().getUserData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            final userName = snapshot.data?['name'] ?? 'User';
+                            return Text(
+                              'Hello $userName',
+                              style: GoogleFonts.balooBhai2(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF8A6D3B),
+                              ),
+                            );
+                          } else {
+                            return Text(
+                              'Hello User',
+                              style: GoogleFonts.balooBhai2(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF8A6D3B),
+                              ),
+                            );
+                          }
+                        },
                       ),
                       Text(
                         'We are going to pick it up',
@@ -103,6 +127,8 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Container(
+                      // padding: const EdgeInsets.all(
+                      //     16.0), // Menambahkan padding untuk kontainer ini
                       decoration: BoxDecoration(
                         color: Colors.lightGreen.shade50,
                         borderRadius: BorderRadius.circular(12),
@@ -110,30 +136,48 @@ class HomePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Your Waste\nOur Responsibility',
-                            style: GoogleFonts.balooBhai2(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF0C3A2D),
+                          // Kontainer untuk teks
+                          Container(
+                            padding: const EdgeInsets.all(
+                                16.0), // Padding untuk teks
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Your Waste\nOur Responsibility',
+                                  style: GoogleFonts.balooBhai2(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF0C3A2D),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Explore',
+                                  style: GoogleFonts.balooBhai2(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            'Explore',
-                            style: GoogleFonts.balooBhai2(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
+                          const SizedBox(
+                              height: 16), // Jarak antara teks dan gambar
+
+                          // Kontainer untuk gambar
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              'assets/images/bg-home.png',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                'assets/images/bg-home.png',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                             ),
                           ),
                         ],
