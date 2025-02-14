@@ -99,6 +99,7 @@ class _ChatExpirioScreenState extends State<ChatExpirioScreen> {
                       _sendMessage(_controller.text);
                     }
                   },
+                  heroTag: "chat_send_button",
                   child: Icon(Icons.send),
                   backgroundColor: Colors.green[400],
                   mini: true,

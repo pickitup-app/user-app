@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'dart:io';
 import '../components/header_component.dart' as header;
+import '../services/api_service.dart';
+import '../utils/constants.dart'; // Contains the constant apiFlask and other constants
 
 class ScanPage extends StatefulWidget {
   @override
@@ -12,7 +15,10 @@ class _ScanPageState extends State<ScanPage> {
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
   bool _isCaptured = false;
+  bool _isCapturing = false;
   String? _capturedImagePath;
+  Map<String, dynamic>? _prediction;
+  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -33,6 +39,60 @@ class _ScanPageState extends State<ScanPage> {
   void dispose() {
     _cameraController?.dispose();
     super.dispose();
+  }
+
+  Future<void> _captureAndPredict() async {
+    if (_isCapturing) return; // Prevent multiple captures at the same time.
+    setState(() {
+      _isCapturing = true;
+    });
+
+    try {
+      final XFile image = await _cameraController!.takePicture();
+      final bytes = await File(image.path).readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      // Use the ApiService method to send the image to the Flask backend.
+      final result = await _apiService.predictImage(base64Image);
+      if (result['success'] == true) {
+        final responseData = result['data'];
+        List predictions = responseData['predictions'] ?? [];
+        // Taking the first prediction (if available)
+        if (predictions.isNotEmpty) {
+          setState(() {
+            _prediction = predictions[0];
+            _capturedImagePath = image.path;
+            _isCaptured = true;
+          });
+        } else {
+          setState(() {
+            _prediction = {
+              "class_name": "unknown",
+              "category": "unknown",
+              "confidence": 0
+            };
+            _capturedImagePath = image.path;
+            _isCaptured = true;
+          });
+        }
+      } else {
+        setState(() {
+          _prediction = {
+            "class_name": "error",
+            "category": "error",
+            "confidence": 0
+          };
+          _capturedImagePath = image.path;
+          _isCaptured = true;
+        });
+      }
+    } catch (e) {
+      print('Error capturing and predicting image: $e');
+    } finally {
+      setState(() {
+        _isCapturing = false;
+      });
+    }
   }
 
   @override
@@ -65,17 +125,7 @@ class _ScanPageState extends State<ScanPage> {
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: GestureDetector(
-            onTap: () async {
-              try {
-                final XFile image = await _cameraController!.takePicture();
-                setState(() {
-                  _isCaptured = true;
-                  _capturedImagePath = image.path;
-                });
-              } catch (e) {
-                print('Error capturing image: $e');
-              }
-            },
+            onTap: _captureAndPredict,
             child: Image.asset(
               'assets/images/capture_button.png',
               width: 80,
@@ -107,15 +157,20 @@ class _ScanPageState extends State<ScanPage> {
               Icon(Icons.dangerous, color: Colors.white, size: 50),
               SizedBox(height: 10),
               Text(
-                'Category',
+                _prediction != null && _prediction!['class_name'] != "error"
+                    ? 'Category'
+                    : 'Error',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                'B3 (HAZARDOUS WASTE)',
+                _prediction != null && _prediction!['class_name'] != "error"
+                    ? '${_prediction!['class_name']} (${_prediction!['category']})\nConfidence: ${_prediction!['confidence']}'
+                    : 'Prediction error occurred',
                 style: TextStyle(color: Colors.white, fontSize: 18),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -128,6 +183,7 @@ class _ScanPageState extends State<ScanPage> {
               setState(() {
                 _isCaptured = false;
                 _capturedImagePath = null;
+                _prediction = null;
               });
             },
             child: Text('Scan Again'),

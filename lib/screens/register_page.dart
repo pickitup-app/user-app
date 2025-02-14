@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import '../services/api_service.dart'; // Import ApiService
 
 class RegisterPage extends StatefulWidget {
@@ -16,6 +17,38 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final ApiService _apiService = ApiService();
+
+  // Function to validate input fields.
+  bool _validateInputs() {
+    // Check if any field is empty.
+    if (_nameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty ||
+        _phoneController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty ||
+        _confirmPasswordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Semua field harus diisi!')));
+      return false;
+    }
+
+    // Validate phone number: only digits, 11-13 characters.
+    final phoneRegex = RegExp(r'^\d{11,13}$');
+    if (!phoneRegex.hasMatch(_phoneController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text('Nomor telepon harus berupa angka dengan 11-13 digit.')));
+      return false;
+    }
+
+    // Check if password and confirm password match.
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Password tidak cocok!')));
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +109,10 @@ class _RegisterPageState extends State<RegisterPage> {
               // Form Phone Number
               TextFormField(
                 controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   hintText: 'Enter your phone number',
@@ -142,26 +179,25 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   onPressed: () async {
-                    if (_passwordController.text !=
-                        _confirmPasswordController.text) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Passwords do not match!')));
-                    } else {
-                      final response = await _apiService.register(
-                        _nameController.text,
-                        _emailController.text,
-                        _phoneController.text,
-                        _passwordController.text,
-                      );
+                    // Validate input fields.
+                    if (!_validateInputs()) {
+                      return;
+                    }
 
-                      if (response['success']) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Registration successful')));
-                        Navigator.pushNamed(context, '/home');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(response['message'])));
-                      }
+                    final response = await _apiService.register(
+                      _nameController.text,
+                      _emailController.text,
+                      _phoneController.text,
+                      _passwordController.text,
+                    );
+
+                    if (response['success']) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Registration successful')));
+                      Navigator.pushNamed(context, '/home');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(response['message'])));
                     }
                   },
                   child: Padding(

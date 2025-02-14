@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
-import '../services/api_service.dart'; // Import ApiService
+import 'package:google_fonts/google_fonts.dart';
+import '../services/api_service.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool? _isSubscribed;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateSubscriptionStatus();
+  }
+
+  // Menggunakan method checkIsSubscribed() yang sudah ada di api_service.dart
+  Future<void> _updateSubscriptionStatus() async {
+    bool subscribed = await ApiService().checkIsSubscribed();
+    setState(() {
+      _isSubscribed = subscribed;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +41,16 @@ class HomePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Kiri: Informasi selamat datang dan data user
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // FutureBuilder untuk menampilkan nama user
                       FutureBuilder<Map<String, String?>>(
                         future: ApiService().getUserData(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
                           } else if (snapshot.hasData) {
@@ -39,7 +60,7 @@ class HomePage extends StatelessWidget {
                               style: GoogleFonts.balooBhai2(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF8A6D3B),
+                                color: const Color(0xFF8A6D3B),
                               ),
                             );
                           } else {
@@ -48,7 +69,7 @@ class HomePage extends StatelessWidget {
                               style: GoogleFonts.balooBhai2(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF8A6D3B),
+                                color: const Color(0xFF8A6D3B),
                               ),
                             );
                           }
@@ -63,33 +84,54 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  // Kanan: Indikator status subscription
                   Column(
                     children: [
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundColor: Colors.green.shade100,
-                        child: const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                        ),
-                      ),
+                      _isSubscribed == null
+                          ? SizedBox(
+                              height: 48,
+                              width: 48,
+                              child: CircularProgressIndicator(),
+                            )
+                          : CircleAvatar(
+                              radius: 24,
+                              backgroundColor: _isSubscribed!
+                                  ? Colors.green.shade100
+                                  : Colors.red.shade100,
+                              child: Icon(
+                                _isSubscribed!
+                                    ? Icons.check_circle
+                                    : Icons.cancel,
+                                color:
+                                    _isSubscribed! ? Colors.green : Colors.red,
+                              ),
+                            ),
                       const SizedBox(height: 4),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.lightGreen.shade200,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        child: Text(
-                          'Subscribed',
-                          style: GoogleFonts.balooBhai2(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
+                      _isSubscribed == null
+                          ? const SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    _isSubscribed! ? Colors.green : Colors.red,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              child: Text(
+                                _isSubscribed!
+                                    ? 'Subscribed'
+                                    : 'Not Subscribed',
+                                style: GoogleFonts.balooBhai2(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
                     ],
                   ),
                 ],
@@ -116,19 +158,19 @@ class HomePage extends StatelessWidget {
                       style: GoogleFonts.balooBhai2(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF4CAF50),
+                        color: const Color(0xFF4CAF50),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Your ultimate waste management solution!\nEasily schedule pickups, find drop-off points, scan waste types, and get instant waste solutions.',
                       style: GoogleFonts.balooBhai2(
-                          fontSize: 14, color: Colors.grey),
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     Container(
-                      // padding: const EdgeInsets.all(
-                      //     16.0), // Menambahkan padding untuk kontainer ini
                       decoration: BoxDecoration(
                         color: Colors.lightGreen.shade50,
                         borderRadius: BorderRadius.circular(12),
@@ -136,10 +178,8 @@ class HomePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Kontainer untuk teks
                           Container(
-                            padding: const EdgeInsets.all(
-                                16.0), // Padding untuk teks
+                            padding: const EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -148,7 +188,7 @@ class HomePage extends StatelessWidget {
                                   style: GoogleFonts.balooBhai2(
                                     fontSize: 30,
                                     fontWeight: FontWeight.w900,
-                                    color: Color(0xFF0C3A2D),
+                                    color: const Color(0xFF0C3A2D),
                                   ),
                                 ),
                                 const SizedBox(height: 10),
@@ -163,10 +203,7 @@ class HomePage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                              height: 16), // Jarak antara teks dan gambar
-
-                          // Kontainer untuk gambar
+                          const SizedBox(height: 16),
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
@@ -190,7 +227,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: custom_nav.BottomNavigationBar(),
+      bottomNavigationBar: const custom_nav.BottomNavigationBar(),
     );
   }
 }

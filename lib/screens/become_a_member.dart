@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import 'package:pickitup/components/header_component.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/api_service.dart';
 
 class BecomeAMember extends StatefulWidget {
   const BecomeAMember({Key? key}) : super(key: key);
@@ -14,10 +16,79 @@ class _BecomeAMemberState extends State<BecomeAMember> {
   int _selectedPaymentMethod =
       -1; // Index opsi payment method yang dipilih (-1 = belum ada yang dipilih)
 
+  // Initialize controllers at the time of declaration.
+  final TextEditingController _upcomingChargesController =
+      TextEditingController(text: 'Rp150.000');
+  final TextEditingController _startingDateController =
+      TextEditingController(text: DateTime.now().toString().split(' ')[0]);
+
+  // Controllers for address fields
+  final TextEditingController _streetAddressController =
+      TextEditingController();
+  final TextEditingController _rtController = TextEditingController();
+  final TextEditingController _rwController = TextEditingController();
+  final TextEditingController _postalCodeController = TextEditingController();
+
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _upcomingChargesController.dispose();
+    _startingDateController.dispose();
+    _streetAddressController.dispose();
+    _rtController.dispose();
+    _rwController.dispose();
+    _postalCodeController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitMembership() async {
+    setState(() {
+      _isLoading = true;
+    });
+    // Create a data map to send. Populate with field values.
+    Map<String, dynamic> data = {
+      'street_address': _streetAddressController.text,
+      'rt': _rtController.text,
+      'rw': _rwController.text,
+      'postal_code': _postalCodeController.text,
+      'upcoming_charges': _upcomingChargesController.text,
+      'starting_date': _startingDateController.text,
+      'payment_method': _selectedPaymentMethod,
+    };
+
+    // Create an ApiService instance
+    final apiService = ApiService();
+    final result = await apiService.submitMembership(data);
+    setState(() {
+      _isLoading = false;
+    });
+    // The result is a Map; get the success value (expected to be a bool)
+    bool success = result["success"] as bool;
+    String message = result["message"] as String;
+
+    if (success) {
+      // Show snackbar with success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Subscription Successful'),
+        ),
+      );
+      // Navigate to /wasteway
+      Navigator.pushNamed(context, '/wasteway');
+    } else {
+      // Show snackbar with failure message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Subscription Failed: $message'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Background menggunakan warna dari ProfilePage
       backgroundColor: const Color(0xFFF1FCE4),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -27,14 +98,12 @@ class _BecomeAMemberState extends State<BecomeAMember> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar header (tidak menggunakan padding)
             Image.asset(
               'assets/images/wp-becomeamember.png',
               fit: BoxFit.cover,
               width: double.infinity,
             ),
             const SizedBox(height: 20),
-            // Container form dengan style yang mengadaptasi desain dari ProfilePage
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Container(
@@ -53,7 +122,6 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Judul halaman dan subjudul
                     Text(
                       'Become a member',
                       style: GoogleFonts.balooBhai2(
@@ -66,8 +134,6 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                           fontSize: 16, color: Colors.grey),
                     ),
                     const SizedBox(height: 20),
-
-                    // Bagian Address
                     Text(
                       'Address',
                       style: GoogleFonts.balooBhai2(
@@ -75,6 +141,7 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
+                      controller: _streetAddressController,
                       decoration: InputDecoration(
                         labelText: 'Street Address',
                         border: OutlineInputBorder(),
@@ -91,6 +158,7 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            controller: _rtController,
                             decoration: InputDecoration(
                               labelText: 'RT',
                               border: OutlineInputBorder(),
@@ -106,6 +174,7 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: TextFormField(
+                            controller: _rwController,
                             decoration: InputDecoration(
                               labelText: 'RW',
                               border: OutlineInputBorder(),
@@ -122,6 +191,7 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                     ),
                     const SizedBox(height: 15),
                     TextFormField(
+                      controller: _postalCodeController,
                       decoration: InputDecoration(
                         labelText: 'Postal Code',
                         border: OutlineInputBorder(),
@@ -132,17 +202,20 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                           horizontal: 10,
                         ),
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
                     const SizedBox(height: 20),
-
-                    // Bagian Payment
                     Text(
                       'Payment',
                       style: GoogleFonts.balooBhai2(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
+                    // Read-only TextFormField for Upcoming Charges
                     TextFormField(
+                      controller: _upcomingChargesController,
+                      readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'Upcoming Charges',
                         border: OutlineInputBorder(),
@@ -155,7 +228,10 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                       ),
                     ),
                     const SizedBox(height: 15),
+                    // Read-only TextFormField for Starting Date
                     TextFormField(
+                      controller: _startingDateController,
+                      readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'Starting Date',
                         border: OutlineInputBorder(),
@@ -168,8 +244,6 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Bagian Payment Method dengan tampilan grid (2 per baris)
                     Text(
                       'Payment Method',
                       style: GoogleFonts.balooBhai2(
@@ -178,8 +252,7 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                     const SizedBox(height: 10),
                     GridView.count(
                       crossAxisCount: 2,
-                      childAspectRatio:
-                          2.5, // Menjadikan sel lebih lebar sehingga tingginya lebih pendek
+                      childAspectRatio: 2.5,
                       shrinkWrap: true,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
@@ -192,12 +265,8 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                       ],
                     ),
                     const SizedBox(height: 20),
-
-                    // Tombol Subscribe dengan teks berwarna putih
                     ElevatedButton(
-                      onPressed: () {
-                        // Logika untuk subscribe
-                      },
+                      onPressed: _isLoading ? null : _submitMembership,
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
                         backgroundColor: Colors.green,
@@ -207,7 +276,11 @@ class _BecomeAMemberState extends State<BecomeAMember> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      child: const Text('Subscribe'),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text('Subscribe'),
                     ),
                   ],
                 ),
@@ -221,7 +294,6 @@ class _BecomeAMemberState extends State<BecomeAMember> {
     );
   }
 
-  // Widget untuk opsi Payment Method yang dapat diklik (selector)
   Widget _paymentMethodOption(String assetPath, int index) {
     bool isSelected = _selectedPaymentMethod == index;
     return InkWell(

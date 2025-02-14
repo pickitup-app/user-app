@@ -11,6 +11,7 @@ import 'package:pickitup/screens/register_page.dart';
 import 'package:pickitup/screens/home_page.dart';
 import 'package:pickitup/screens/waste_way_page.dart';
 import 'package:pickitup/screens/scan_page.dart';
+import 'package:pickitup/screens/edit_profile.dart';
 
 void main() {
   runApp(MyApp());
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
         '/register': (context) =>
             RegisterPage(), // Halaman login sebagai default
         '/home': (context) => HomePage(), // Halaman setelah login
-        '/profile': (context) => ProfilePage(), // Halaman jadwal
+        '/profile': (context) => ProfilePage(), // Halaman profile
+        '/editprofile': (context) => EditProfilePage(), // Halaman edit profile
         '/wasteway': (context) => WasteWayPage(), // Halaman keanggotaan
         '/becomeamember': (context) => BecomeAMember(),
         // Halaman jadwal

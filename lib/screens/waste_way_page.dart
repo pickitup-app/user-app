@@ -1,9 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pickitup/components/bottom_navigation_bar.dart'
-    as custom_nav; // Import navbar
+import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/api_service.dart';
 
-class WasteWayPage extends StatelessWidget {
+class WasteWayPage extends StatefulWidget {
+  const WasteWayPage({Key? key}) : super(key: key);
+
+  @override
+  _WasteWayPageState createState() => _WasteWayPageState();
+}
+
+class _WasteWayPageState extends State<WasteWayPage> {
+  @override
+  void initState() {
+    super.initState();
+    _updateSubscriptionStatus();
+  }
+
+  // Menggunakan function checkIsSubscribed() dari ApiService untuk update status
+  Future<void> _updateSubscriptionStatus() async {
+    await ApiService().checkIsSubscribed();
+  }
+
+  Future<void> _handlePickupTap(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isSubscribed = prefs.getBool('is_subscribed') ?? false;
+    if (isSubscribed) {
+      Navigator.pushNamed(context, '/pickup_schedule');
+    } else {
+      Navigator.pushNamed(context, '/becomeamember');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,9 +42,8 @@ class WasteWayPage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/icons/bg-wasteway.png'), // Ganti dengan path gambar background
-                fit: BoxFit.cover, // Background memenuhi layar
+                image: AssetImage('assets/icons/bg-wasteway.png'),
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -23,13 +51,10 @@ class WasteWayPage extends StatelessWidget {
           Align(
             alignment: const Alignment(0, -0.62),
             child: SingleChildScrollView(
-              // Membuat konten scrollable jika dibutuhkan
               child: Column(
-                mainAxisSize: MainAxisSize
-                    .min, // Minimize space to center content vertically
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                      height: 30), // Mengurangi spasi atas agar lebih ke atas
+                  SizedBox(height: 30),
                   // Header Title
                   Text(
                     "Choose Your\nWaste Way Method",
@@ -40,12 +65,10 @@ class WasteWayPage extends StatelessWidget {
                       color: Colors.green.shade800,
                     ),
                   ),
-                  SizedBox(
-                      height: 20), // Mengurangi spasi antar judul dan tombol
+                  SizedBox(height: 20),
                   // Drop Off Button
                   GestureDetector(
                     onTap: () {
-                      // Aksi saat tombol Drop Off ditekan
                       Navigator.pushNamed(context, '/dropoff');
                     },
                     child: Container(
@@ -66,7 +89,7 @@ class WasteWayPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Image.asset(
-                            'assets/icons/dropoff.png', // Ganti dengan path gambar Drop Off
+                            'assets/icons/dropoff.png',
                             height: 120,
                           ),
                           SizedBox(height: 8),
@@ -82,11 +105,10 @@ class WasteWayPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Pick Up Button
+                  // Pick Up Button with conditional navigation
                   GestureDetector(
                     onTap: () {
-                      // Aksi saat tombol Pick Up ditekan
-                      Navigator.pushNamed(context, '/pickup_schedule');
+                      _handlePickupTap(context);
                     },
                     child: Container(
                       margin:
@@ -106,7 +128,7 @@ class WasteWayPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Image.asset(
-                            'assets/icons/pickup.png', // Ganti dengan path gambar Pick Up
+                            'assets/icons/pickup.png',
                             height: 120,
                           ),
                           SizedBox(height: 8),
@@ -128,7 +150,6 @@ class WasteWayPage extends StatelessWidget {
           ),
         ],
       ),
-      // Bottom Navigation Bar
       bottomNavigationBar: custom_nav.BottomNavigationBar(),
     );
   }
