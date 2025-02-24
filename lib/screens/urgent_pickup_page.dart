@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import 'package:pickitup/components/header_component.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:google_fonts/google_fonts.dart';
+import '../services/api_service.dart';
 
-class UrgentPickUpPage extends StatelessWidget {
+class UrgentPickUpPage extends StatefulWidget {
+  @override
+  _UrgentPickUpPageState createState() => _UrgentPickUpPageState();
+}
+
+class _UrgentPickUpPageState extends State<UrgentPickUpPage> {
+  // Variabel untuk menampung nilai time slot yang dipilih.
+  String _selectedTimeSlot = '08 : 00 - 09 : 00';
+  final ApiService apiService = ApiService();
+
+  void _submitOrder() async {
+    // Memanggil fungsi submitUrgentPickup pada ApiService dan menunggu responnya.
+    final result = await apiService.submitUrgentPickup(_selectedTimeSlot);
+    // Menampilkan response message dari laravel.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(result['message'] ?? 'No message returned')),
+    );
+    // Jika berhasil, navigasi ke /wasteway
+    if (result['success'] == true) {
+      Navigator.pushNamed(context, '/wasteway');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +39,7 @@ class UrgentPickUpPage extends StatelessWidget {
                 _buildOrderCard(),
                 Spacer(),
                 Image.asset(
-                  'assets/images/bg-urgent.png', // Ganti dengan path gambar yang sesuai
+                  'assets/images/bg-urgent.png',
                   fit: BoxFit.fitWidth,
                   height: 250,
                   width: double.infinity,
@@ -26,13 +49,14 @@ class UrgentPickUpPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: custom_nav.BottomNavigationBar(),
+      bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),
     );
   }
 
   Widget _buildOrderCard() {
     return Container(
       padding: EdgeInsets.all(16),
+      margin: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -51,7 +75,9 @@ class UrgentPickUpPage extends StatelessWidget {
           Text(
             'Price',
             style: GoogleFonts.balooBhai2(
-                fontSize: 16, fontWeight: FontWeight.bold),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 8),
           _buildTextField('Rp.100.000,00'),
@@ -59,15 +85,22 @@ class UrgentPickUpPage extends StatelessWidget {
           Text(
             'Payment Method',
             style: GoogleFonts.balooBhai2(
-                fontSize: 16, fontWeight: FontWeight.bold),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 8),
-          _buildTextField('gopay', prefixIcon: Icons.payment),
+          _buildTextField(
+            'gopay',
+            prefixIcon: Icons.payment,
+          ),
           SizedBox(height: 16),
           Text(
             'Time',
             style: GoogleFonts.balooBhai2(
-                fontSize: 16, fontWeight: FontWeight.bold),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 8),
           _buildDropdownField(),
@@ -78,11 +111,13 @@ class UrgentPickUpPage extends StatelessWidget {
                 backgroundColor: Colors.green.shade800,
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
               ),
-              onPressed: () {},
+              onPressed: _submitOrder,
               child: Text(
                 'Order',
-                style:
-                    GoogleFonts.balooBhai2(fontSize: 18, color: Colors.white),
+                style: GoogleFonts.balooBhai2(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -117,7 +152,7 @@ class UrgentPickUpPage extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: '08 : 00 - 09 : 00',
+          value: _selectedTimeSlot,
           items: [
             DropdownMenuItem(
               value: '08 : 00 - 09 : 00',
@@ -127,8 +162,30 @@ class UrgentPickUpPage extends StatelessWidget {
               value: '09 : 00 - 10 : 00',
               child: Text('09 : 00 - 10 : 00'),
             ),
+            DropdownMenuItem(
+              value: '10 : 00 - 11 : 00',
+              child: Text('10 : 00 - 11 : 00'),
+            ),
+            DropdownMenuItem(
+              value: '13 : 00 - 14 : 00',
+              child: Text('13 : 00 - 14 : 00'),
+            ),
+            DropdownMenuItem(
+              value: '14 : 00 - 15 : 00',
+              child: Text('14 : 00 - 15 : 00'),
+            ),
+            DropdownMenuItem(
+              value: '15 : 00 - 16 : 00',
+              child: Text('15 : 00 - 16 : 00'),
+            ),
           ],
-          onChanged: (value) {},
+          onChanged: (value) {
+            if (value != null) {
+              setState(() {
+                _selectedTimeSlot = value;
+              });
+            }
+          },
         ),
       ),
     );

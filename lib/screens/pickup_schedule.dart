@@ -31,13 +31,27 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     }
   }
 
-  // Fetch tracks for a given order by calling ApiService.getTracks.
+  // Kelompokkan orders berdasarkan tanggal order
+  Map<String, List<dynamic>> _groupOrdersByDate(List<dynamic> orders) {
+    Map<String, List<dynamic>> groups = {};
+    for (var order in orders) {
+      String dateKey = order['order_date'] ?? 'No Date';
+      if (groups.containsKey(dateKey)) {
+        groups[dateKey]!.add(order);
+      } else {
+        groups[dateKey] = [order];
+      }
+    }
+    return groups;
+  }
+
+  // Fetch tracks untuk sebuah order dengan memanggil ApiService.getTracks.
   Future<List<dynamic>> _fetchTracks(int orderId) async {
     try {
       final response = await _apiService.getTracks({'order_id': orderId});
       if (response['success'] == true && response['data'] != null) {
         List<dynamic> tracks = List<dynamic>.from(response['data']);
-        // Sort tracks from newest to oldest using created_at
+        // Mengurutkan timeline track dari terbaru sampai yang terlama
         tracks.sort((a, b) => DateTime.parse(b['created_at'])
             .compareTo(DateTime.parse(a['created_at'])));
         return tracks;
@@ -60,14 +74,14 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     return false;
   }
 
-  // Convert dynamic "is_urgent" value into a bool.
+  // Konversi nilai dinamis "is_urgent" ke bool.
   bool _convertToBool(dynamic value) {
     if (value is bool) return value;
     if (value is int) return value == 1;
     return false;
   }
 
-  // Parse the order date based on possible formats.
+  // Parsing tanggal order berdasarkan beberapa format yang mungkin.
   DateTime? _parseOrderDate(String dateStr) {
     try {
       return DateTime.parse(dateStr);
@@ -81,7 +95,7 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     }
   }
 
-  // Determine the background color based on order date.
+  // Menentukan warna latar berdasarkan tanggal order.
   Color _getBackgroundColor(String orderDate) {
     DateTime? dt = _parseOrderDate(orderDate);
     if (dt != null) {
@@ -97,14 +111,14 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     return Colors.white;
   }
 
-  // Decide text color based on background.
+  // Menentukan warna text berdasarkan warna latar.
   Color _getTextColor(Color backgroundColor) {
     return backgroundColor == Colors.white
         ? Colors.green.shade800
         : Colors.white;
   }
 
-  // Filter orders based on the selected tab.
+  // Filter orders berdasarkan tab yang dipilih.
   List<dynamic> _filterOrders(List<dynamic> orders) {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
@@ -114,20 +128,20 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
       if (dt == null) return false;
       DateTime orderDay = DateTime(dt.year, dt.month, dt.day);
       if (_selectedTabIndex == 0) {
-        // Scheduled: orders for today or after today.
+        // Scheduled: orders untuk hari ini atau setelahnya.
         return orderDay.isAtSameMomentAs(today) || orderDay.isAfter(today);
       } else if (_selectedTabIndex == 1) {
-        // Ongoing: orders for today only.
+        // Ongoing: orders hanya untuk hari ini.
         return orderDay.isAtSameMomentAs(today);
       } else if (_selectedTabIndex == 2) {
-        // History: orders before today.
+        // History: orders sebelum hari ini.
         return orderDay.isBefore(today);
       }
       return false;
     }).toList();
   }
 
-  // Custom tabs
+  // Custom tabs.
   Widget _buildScheduleTab() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -160,7 +174,7 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     );
   }
 
-  // Generic timeline item widget.
+  // Widget untuk menampilkan timeline item secara umum.
   Widget _buildTimelineItem({required Widget child, bool isCompleted = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8.0),
@@ -203,9 +217,12 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     );
   }
 
-  // Main pick up item widget.
-  Widget _buildPickUpItem(
-      {required String date, required String time, bool isUrgent = false}) {
+  // Widget utama untuk item pick up.
+  Widget _buildPickUpItem({
+    required String date,
+    required String time,
+    bool isUrgent = false,
+  }) {
     Color backgroundColor = _getBackgroundColor(date);
     Color textColor = _getTextColor(backgroundColor);
 
@@ -267,7 +284,7 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
     );
   }
 
-  // Widget to display tracks timeline for a given order.
+  // Widget untuk menampilkan timeline tracks untuk order tertentu.
   Widget _buildTracksTimeline(int orderId) {
     return FutureBuilder<List<dynamic>>(
       future: _fetchTracks(orderId),
@@ -294,7 +311,7 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header for tracks.
+            // Header untuk tracks.
             Padding(
               padding: const EdgeInsets.only(top: 16, bottom: 8),
               child: Text(
@@ -368,8 +385,9 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
                     return const Center(
                         child: Text('No pick up orders available.'));
                   }
-                  final orders = _filterOrders(snapshot.data!);
-                  if (orders.isEmpty) {
+                  // Filter order sesuai tab yang dipilih.
+                  final filteredOrders = _filterOrders(snapshot.data!);
+                  if (filteredOrders.isEmpty) {
                     return Center(
                       child: Text(
                         _selectedTabIndex == 2
@@ -382,31 +400,36 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
                       ),
                     );
                   }
+                  // Kelompokkan orders berdasarkan tanggal.
+                  final groupedOrders = _groupOrdersByDate(filteredOrders);
                   return ListView(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    children: orders.map((order) {
-                      // Build primary order timeline item.
-                      List<Widget> orderWidgets = [
-                        _buildTimelineItem(
-                          isCompleted: _isOrderCompleted(order),
-                          child: _buildPickUpItem(
-                            date: order['order_date'] ?? 'No date available',
-                            time: (order.containsKey('time') &&
-                                    order['time'] != null)
-                                ? order['time']
-                                : 'Scheduled',
-                            isUrgent: _convertToBool(order['is_urgent']),
-                          ),
-                        ),
-                      ];
-                      // For Ongoing tab, append the tracks timeline below the order item.
-                      if (_selectedTabIndex == 1) {
-                        orderWidgets.add(_buildTracksTimeline(order['id']));
-                      }
+                    children: groupedOrders.entries.map((entry) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: orderWidgets,
+                        children: entry.value.map<Widget>((order) {
+                          // Buat widget order serta timeline tracks bila pada tab Ongoing.
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildTimelineItem(
+                                isCompleted: _isOrderCompleted(order),
+                                child: _buildPickUpItem(
+                                  date: order['order_date'] ??
+                                      'No date available',
+                                  time: (order.containsKey('time') &&
+                                          order['time'] != null)
+                                      ? order['time']
+                                      : 'Scheduled',
+                                  isUrgent: _convertToBool(order['is_urgent']),
+                                ),
+                              ),
+                              if (_selectedTabIndex == 1)
+                                _buildTracksTimeline(order['id']),
+                            ],
+                          );
+                        }).toList(),
                       );
                     }).toList(),
                   );
@@ -416,7 +439,7 @@ class _PickUpSchedulePageState extends State<PickUpSchedulePage> {
           ],
         ),
       ),
-      bottomNavigationBar: custom_nav.BottomNavigationBar(),
+      bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),
     );
   }
 }

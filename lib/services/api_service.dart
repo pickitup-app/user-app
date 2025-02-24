@@ -429,4 +429,126 @@ class ApiService {
       return {'success': false, 'message': 'An error occurred: $e'};
     }
   }
+
+  Future<Map<String, dynamic>> getChats() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('auth_token');
+    if (token == null) {
+      return {
+        'success': false,
+        'message': 'User not authenticated. Token is missing.'
+      };
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-chats'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return {
+          'success': true,
+          'data': responseData['data'],
+        };
+      } else {
+        final responseData = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': responseData['message'] ?? 'Failed to fetch chats.',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>> sendChat(String message) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('auth_token');
+    if (token == null) {
+      return {
+        'success': false,
+        'message': 'User not authenticated. Token is missing.'
+      };
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/send-chat'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'message': message,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return {
+          'success': true,
+          'data': responseData['data'],
+        };
+      } else {
+        final responseData = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': responseData['message'] ?? 'Error when sending chat.',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+  // ============================
+  // Fungsi baru: submitUrgentPickup
+  // Fungsi ini memanggil endpoint POST /urgent-pickup sesuai dengan route dan controller Laravel.
+  // Parameter timeSlot dikirim sebagai salah satu input, sementara parameter 'category', 'address'
+  // & 'driver_id' dikirim sesuai dengan validasi controller.
+  // Catatan: Sesuaikan nilai 'address' dan 'driver_id' sesuai kebutuhan aplikasi Anda.
+  // ============================
+  Future<Map<String, dynamic>> submitUrgentPickup(String timeSlot) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('auth_token');
+    if (token == null) {
+      return {
+        'success': false,
+        'message': 'User not authenticated. Token is missing.'
+      };
+    }
+    try {
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/urgent-pickup'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          // Sesuaikan dengan validasi di controller, walaupun pada controller category di-set secara hardcoded.
+          'category': 'Urgent Pickup',
+          // Meskipun controller menggunakan auth()->user()->address untuk mengisi alamat, parameter ini
+          // masih wajib dikirim sesuai validasi.
+          'address': 'Your Pickup Address',
+          // Pastikan driver_id valid (misalnya, id driver yang tersedia). Jika tidak ada,
+          // bisa kirim dummy value yang valid sesuai data pada database Anda.
+          'driver_id': 1,
+          'time_slot': timeSlot,
+        }),
+      );
+      final responseData = jsonDecode(response.body);
+      return responseData;
+    } catch (e) {
+      return {'success': false, 'message': 'An exception occurred: $e'};
+    }
+  }
 }

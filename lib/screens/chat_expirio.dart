@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/chat_bubble.dart';
 import '../components/bottom_navigation_bar.dart' as custom_nav;
 import '../components/header_component.dart' as header;
+import '../services/api_service.dart';
 
 class ChatExpirioScreen extends StatefulWidget {
   @override
@@ -9,60 +10,132 @@ class ChatExpirioScreen extends StatefulWidget {
 }
 
 class _ChatExpirioScreenState extends State<ChatExpirioScreen> {
-  final List<Map<String, dynamic>> messages = [
-    {"text": "Hello Expirio, how should I dispose bleach?", "isUser": true},
-    {
-      "text": "How to Dispose of Bleach Safely\n\n"
-          "1. Small Amounts:\n"
-          "- Dilute with plenty of water and pour down the sink or toilet.\n"
-          "- Do not mix with other chemicals.\n\n"
-          "2. Large Amounts:\n"
-          "- Take to a hazardous waste disposal facility.\n\n"
-          "3. Container:\n"
-          "- Rinse thoroughly and recycle if permitted.\n\n"
-          "4. Safety Tips:\n"
-          "- Ensure good ventilation, wear gloves, and keep away from children and pets.",
-      "isUser": false
-    },
-    {"text": "Where should I throw empty bleach bottle?", "isUser": true},
-    {
-      "text":
-          "You should throw an empty bleach bottle in the B3 (Hazardous Waste) bin. This is because bleach bottles previously contained hazardous chemicals, making them suitable for the B3 category, even if rinsed.",
-      "isUser": false
-    },
-    {"text": "Thank you, Expirio!", "isUser": true},
-    {"text": "You're welcome! Stay safe.", "isUser": false},
-  ];
-
+  final List<Map<String, dynamic>> messages = [];
   final TextEditingController _controller = TextEditingController();
+  final ApiService _apiService = ApiService();
+  final ScrollController _scrollController = ScrollController();
+  bool _isTyping = false;
 
-  void _sendMessage(String text) {
+  @override
+  void initState() {
+    super.initState();
+    _loadChats();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // Helper method to check if the given value represents a bot message.
+  bool _isBot(dynamic isBotValue) {
+    final value = isBotValue.toString().toLowerCase();
+    return value == 'true' || value == '1';
+  }
+
+  // Scroll to the bottom when new messages are added.
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  Future<void> _loadChats() async {
+    final result = await _apiService.getChats();
+    if (result['success'] == true && result['data'] != null) {
+      setState(() {
+        messages.clear();
+        for (var chat in result['data']) {
+          messages.add({
+            "text": chat['message'],
+            // If is_bot is true then it is a bot response (display on left).
+            "isUser": _isBot(chat['is_bot']) ? false : true,
+          });
+        }
+      });
+      _scrollToBottom();
+    } else {
+      debugPrint("Error loading chats: ${result['message']}");
+    }
+  }
+
+  Future<void> _sendMessage(String text) async {
+    // Append user's message (optimistic update) and show typing indicator.
     setState(() {
       messages.add({"text": text, "isUser": true});
+      _isTyping = true;
     });
     _controller.clear();
+    _scrollToBottom();
+
+    final result = await _apiService.sendChat(text);
+    if (result['success'] == true && result['data'] != null) {
+      // Instead of clearing the conversation completely,
+      // we update the conversation only if the new result shows progress.
+      final List<dynamic> resultChats = result['data'];
+      if (resultChats.length > messages.length) {
+        setState(() {
+          messages.clear();
+          for (var chat in resultChats) {
+            messages.add({
+              "text": chat['message'],
+              "isUser": _isBot(chat['is_bot']) ? false : true,
+            });
+          }
+          _isTyping = false;
+        });
+      } else {
+        setState(() {
+          _isTyping = false;
+        });
+      }
+      _scrollToBottom();
+    } else {
+      setState(() {
+        _isTyping = false;
+      });
+      debugPrint("Error sending chat: ${result['message']}");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Calculate total items: messages plus typing indicator if active.
+    final itemCount = messages.length + (_isTyping ? 1 : 0);
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60), // Tinggi header
-        child: header.HeaderComponent(
-            "Expirio"), // HeaderComponent dipanggil di sini
+        preferredSize: Size.fromHeight(60),
+        child: header.HeaderComponent("Expirio"),
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              reverse: true,
-              itemCount: messages.length,
+              controller: _scrollController,
+              itemCount: itemCount,
               itemBuilder: (context, index) {
-                final message = messages[messages.length - 1 - index];
-                return ChatBubble(
-                  message: message["text"],
-                  isUser: message["isUser"],
-                );
+                if (index < messages.length) {
+                  final message = messages[index];
+                  return ChatBubble(
+                    message: message["text"],
+                    isUser: message["isUser"],
+                  );
+                } else {
+                  // Show a typing indicator bubble.
+                  return ChatBubble(
+                    message: "Typing...",
+                    isUser: false,
+                  );
+                }
               },
             ),
           ),
@@ -109,8 +182,7 @@ class _ChatExpirioScreenState extends State<ChatExpirioScreen> {
           ),
         ],
       ),
-      bottomNavigationBar:
-          custom_nav.BottomNavigationBar(), // Gunakan BottomNavigationBar
+      bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),
     );
   }
 }

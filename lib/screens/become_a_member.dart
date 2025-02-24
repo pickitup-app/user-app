@@ -290,7 +290,7 @@ class _BecomeAMemberState extends State<BecomeAMember> {
           ],
         ),
       ),
-      bottomNavigationBar: custom_nav.BottomNavigationBar(),
+      bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),
     );
   }
 

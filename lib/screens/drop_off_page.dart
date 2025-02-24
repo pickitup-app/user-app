@@ -161,7 +161,7 @@ class DropOffPage extends StatelessWidget {
         ),
       ),
       // Bottom Navigation Bar
-      bottomNavigationBar: custom_nav.BottomNavigationBar(),
+      bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),
     );
   }
 

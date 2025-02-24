@@ -47,6 +47,8 @@ class MyApp extends StatelessWidget {
         '/pickup_schedule': (context) => PickUpSchedulePage(), // Halaman jadwal
         '/chat': (context) => ChatExpirioScreen(), // Halaman chat
         '/scan': (context) => ScanPage(), // Halaman scan
+        '/urgent_pickup': (context) =>
+            UrgentPickUpPage(), // Halaman urgent pickup
       },
     );
   }

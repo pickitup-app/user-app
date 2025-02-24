@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
-class BottomNavigationBar extends StatelessWidget {
-  const BottomNavigationBar({Key? key}) : super(key: key);
+class CustomBottomNavigationBar extends StatelessWidget {
+  const CustomBottomNavigationBar({Key? key}) : super(key: key);
 
   // Helper method to navigate only if the target route is not the current one.
   // Untuk animasi yang lebih halus, pastikan custom route transition didefinisikan pada MaterialApp.onGenerateRoute.

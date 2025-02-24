@@ -126,7 +126,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       HeaderComponent("Edit Profile"),
                       SizedBox(height: 20),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: _InfoSection(
                           title: 'Personal Information and Address',
                           icon: Icons.person_outline,
@@ -196,7 +196,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ],
                   ),
                 ),
-      bottomNavigationBar: custom_nav.BottomNavigationBar(),
+      bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),
     );
   }
 }

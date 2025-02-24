@@ -8,34 +8,39 @@ class HeaderComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.brown,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+    return SafeArea(
+      bottom: false,
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.brown,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                title,
-                style: GoogleFonts.balooBhai2(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green.shade800,
+            Expanded(
+              child: Center(
+                child: Text(
+                  title,
+                  style: GoogleFonts.balooBhai2(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green.shade800,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 40), // Placeholder to balance the design
-        ],
+            const SizedBox(width: 40), // Placeholder to balance the design
+          ],
+        ),
       ),
     );
   }
