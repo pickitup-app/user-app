@@ -23,6 +23,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _rwController;
   late TextEditingController _postalController;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -68,6 +70,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _submitUpdate() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
     setState(() {
       isUpdating = true;
     });
@@ -93,15 +98,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Widget _buildTextField(
-      {required String label,
-      required TextEditingController controller,
-      bool readOnly = false}) {
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    String? Function(String?)? validator,
+    bool readOnly = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
+        validator: validator ??
+            (value) {
+              if (value == null || value.trim().isEmpty) {
+                return '$label must not be empty';
+              }
+              return null;
+            },
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),
@@ -110,6 +124,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ),
       ),
     );
+  }
+
+  String? _validatePhoneNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Phone Number must not be empty';
+    }
+    final numericRegex = RegExp(r'^\d{11,13}$');
+    if (!numericRegex.hasMatch(value.trim())) {
+      return 'Phone Number must between 11-13 digits';
+    }
+    return null;
   }
 
   @override
@@ -121,79 +146,84 @@ class _EditProfilePageState extends State<EditProfilePage> {
           : errorMessage.isNotEmpty
               ? Center(child: Text(errorMessage))
               : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      HeaderComponent("Edit Profile"),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: _InfoSection(
-                          title: 'Personal Information and Address',
-                          icon: Icons.person_outline,
-                          children: [
-                            _buildTextField(
-                                label: 'Full Name',
-                                controller: _nameController),
-                            _buildTextField(
-                                label: 'Phone Number',
-                                controller: _phoneController),
-                            _buildTextField(
-                                label: 'Street Address',
-                                controller: _streetController),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildTextField(
-                                      label: 'RT', controller: _rtController),
-                                ),
-                                SizedBox(width: 16),
-                                Expanded(
-                                  child: _buildTextField(
-                                      label: 'RW', controller: _rwController),
-                                ),
-                              ],
-                            ),
-                            _buildTextField(
-                                label: 'Postal Code',
-                                controller: _postalController),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green.shade800,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        HeaderComponent("Edit Profile"),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: _InfoSection(
+                            title: 'Personal Information and Address',
+                            icon: Icons.person_outline,
+                            children: [
+                              _buildTextField(
+                                  label: 'Full Name',
+                                  controller: _nameController),
+                              _buildTextField(
+                                  label: 'Phone Number',
+                                  controller: _phoneController,
+                                  validator: _validatePhoneNumber),
+                              _buildTextField(
+                                  label: 'Street Address',
+                                  controller: _streetController),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildTextField(
+                                        label: 'RT', controller: _rtController),
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    child: _buildTextField(
+                                        label: 'RW', controller: _rwController),
+                                  ),
+                                ],
                               ),
-                            ),
-                            onPressed: isUpdating ? null : _submitUpdate,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 12.0),
-                              child: isUpdating
-                                  ? CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    )
-                                  : Text(
-                                      'Update',
-                                      style: GoogleFonts.balooBhai2(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                              _buildTextField(
+                                  label: 'Postal Code',
+                                  controller: _postalController),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green.shade800,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: isUpdating ? null : _submitUpdate,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12.0),
+                                child: isUpdating
+                                    ? CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      )
+                                    : Text(
+                                        'Update',
+                                        style: GoogleFonts.balooBhai2(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                        SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
       bottomNavigationBar: custom_nav.CustomBottomNavigationBar(),

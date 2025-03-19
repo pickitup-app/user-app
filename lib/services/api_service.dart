@@ -41,6 +41,7 @@ class ApiService {
             'user_is_subscribed', userData['is_subscribed']?.toString() ?? '');
         await prefs.setString(
             'valid_until', userData['valid_until']?.toString() ?? '');
+        await prefs.setString('point', userData['point']?.toString() ?? '0');
 
         return {
           'success': true,
@@ -234,7 +235,6 @@ class ApiService {
     }
   }
 
-  // Existing getUserData method...
   Future<Map<String, String?>> getUserData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return {
@@ -242,6 +242,8 @@ class ApiService {
       'name': prefs.getString('user_name'),
       'email': prefs.getString('user_email'),
       'phone_number': prefs.getString('user_phone_number'),
+      // Store points under the key "point" (ensure you store this value during login)
+      'point': prefs.getString('point') ?? "0",
     };
   }
 
@@ -549,6 +551,229 @@ class ApiService {
       return responseData;
     } catch (e) {
       return {'success': false, 'message': 'An exception occurred: $e'};
+    }
+  }
+
+  // Updated method getArticles with additional check for empty response bodies.
+  Future<List<dynamic>> getArticles() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-articles'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+      print('[getArticles] Response status: ${response.statusCode}');
+      print('[getArticles] Response body: ${response.body}');
+
+      // If the response body is empty, return an empty list.
+      if (response.body.trim().isEmpty) {
+        print('[getArticles] Empty response body.');
+        return [];
+      }
+
+      final responseData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (responseData['success'] == true &&
+            responseData.containsKey('data')) {
+          if (responseData['data'] is List) {
+            return responseData['data'];
+          } else {
+            print('[getArticles] Data is not a List.');
+            return [];
+          }
+        } else {
+          print('[getArticles] Response does not contain valid data.');
+          return [];
+        }
+      } else {
+        print(
+            '[getArticles] HTTP error with status code ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('[getArticles] An error occurred: $e');
+      return [];
+    }
+  }
+
+  // Example implementation for getSpecificArticle (if needed later).
+  Future<Map<String, dynamic>> getSpecificArticle(dynamic id) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-article/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+      if (response.body.trim().isEmpty) {
+        return {'success': false, 'message': 'Empty response body.'};
+      }
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        final responseData = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': responseData['message'] ?? 'Error fetching article.'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+  // New method to get all catalogs for the Redeem tab
+  Future<List<dynamic>> getCatalogs() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-catalogs'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['success'] == true &&
+            responseData.containsKey('data')) {
+          if (responseData['data'] is List) {
+            return responseData['data'];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print('[getCatalogs] Exception: $e');
+      return [];
+    }
+  }
+
+  // New method to get catalogs for the user (both redeemed and not redeemed)
+  // New method to get catalogs for the user (both redeemed and not redeemed)
+  Future<List<dynamic>> getCatalogsUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('auth_token');
+    if (token == null) {
+      print('[getCatalogsUser] Token is missing.');
+      return [];
+    }
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-catalogs-user'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print('[getCatalogsUser] Response status: ${response.statusCode}');
+      print('[getCatalogsUser] Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['success'] == true &&
+            responseData.containsKey('data')) {
+          if (responseData['data'] is List) {
+            print('[getCatalogsUser] Data: ${responseData['data']}');
+            return responseData['data'];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print('[getCatalogsUser] Exception: $e');
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> getSpecificCatalog(dynamic id) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-catalog/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+      if (response.body.trim().isEmpty) {
+        return {'success': false, 'message': 'Empty response body.'};
+      }
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        final responseData = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': responseData['message'] ?? 'Error fetching catalog.'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>> redeemVoucher(dynamic catalogId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('auth_token');
+    if (token == null) {
+      return {
+        'success': false,
+        'message': 'User not authenticated. Token is missing.'
+      };
+    }
+    try {
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/redeem/$catalogId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      final responseData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': responseData['message'] ?? 'Voucher redeemed successfully.'
+        };
+      } else {
+        return {
+          'success': false,
+          'message': responseData['message'] ?? 'Failed to redeem voucher.'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+  // New method to fetch user point using the /get-user-point endpoint.
+  Future<Map<String, dynamic>> getUserPoint() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('auth_token');
+    if (token == null) {
+      return {
+        'success': false,
+        'message': 'User not authenticated. Token is missing.'
+      };
+    }
+    try {
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/get-user-point'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      final responseData = jsonDecode(response.body);
+      return responseData;
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
     }
   }
 }

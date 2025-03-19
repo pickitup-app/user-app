@@ -6,10 +6,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({Key? key}) : super(key: key);
 
   // Helper method to navigate only if the target route is not the current one.
-  // Untuk animasi yang lebih halus, pastikan custom route transition didefinisikan pada MaterialApp.onGenerateRoute.
+  // For smoother animations, define custom route transitions on MaterialApp.onGenerateRoute.
   void _safeNavigate(BuildContext context, String routeName) {
-    // Cek nama route saat ini, jika sama dengan route tujuan maka tidak melakukan navigasi.
-    if (ModalRoute.of(context)?.settings.name == routeName) return;
     Navigator.pushNamed(context, routeName);
   }
 
@@ -36,6 +34,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               children: [
                 // Home Icon with Text
                 _buildSvgWithText(
+                  context: context,
                   svgPath: 'assets/icons/home.svg',
                   color: const Color(0XFF6D9773), // Custom color for Home icon
                   label: 'Home',
@@ -45,6 +44,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 ),
                 // Waste Icon with Text
                 _buildSvgWithText(
+                  context: context,
                   svgPath: 'assets/icons/remove_trash.svg',
                   color: const Color(0XFF6D9773), // Custom color for Waste icon
                   label: 'Waste Way',
@@ -53,9 +53,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   },
                 ),
                 // Spacer for Floating Button
-                const SizedBox(width: 48), // Beri ruang untuk FAB
-                // Expire Icon with Text (misal untuk Chat)
+                const SizedBox(width: 48), // Reserve space for the FAB
+                // Expire Icon with Text (e.g., for Chat)
                 _buildSvgWithText(
+                  context: context,
                   svgPath: 'assets/icons/chat_exp.svg',
                   color:
                       const Color(0XFF6D9773), // Custom color for Expire icon
@@ -66,6 +67,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 ),
                 // Profile Icon with Text
                 _buildSvgWithText(
+                  context: context,
                   svgPath: 'assets/icons/profile.svg',
                   color:
                       const Color(0XFF6D9773), // Custom color for Profile icon
@@ -79,7 +81,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           ),
           // FloatingActionButton in the center
           Positioned(
-            top: -10, // Mengatur overflow
+            top: -10, // Adjust overflow as needed
             left: MediaQuery.of(context).size.width / 2 - 28,
             child: FloatingActionButton(
               onPressed: () {
@@ -88,7 +90,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               backgroundColor: const Color(0xFF6D9773),
               child: const Icon(Icons.qr_code_scanner, color: Colors.white),
               shape: const CircleBorder(), // Ensures the FAB is circular
-              elevation: 8, // Optional: Adjust elevation for shadow effect
+              elevation: 8, // Adjust elevation for a shadow effect
             ),
           ),
         ],
@@ -96,49 +98,39 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  // _buildSvgWithText now uses a Stack with a Positioned GestureDetector that extends the hit area
-  // without changing the visible icon size.
+  // Wrap the icon and text together in an InkWell to expand the hit area; both icon and text will have tap effects.
   Widget _buildSvgWithText({
+    required BuildContext context,
     required String svgPath,
     required String label,
     required VoidCallback onPressed,
-    required Color color, // New color parameter
+    required Color color,
   }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(32),
+      child: Padding(
+        padding: const EdgeInsets.all(3.0), // Increase overall touch area
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
               svgPath,
               width: 24,
               height: 24,
-              color: color, // Apply the color to the SVG
+              color: color,
             ),
-            // Expand the touchable area by positioning a transparent GestureDetector outside the icon's bounds.
-            Positioned(
-              left: -12,
-              top: -12,
-              right: -12,
-              bottom: -12,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: onPressed,
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: GoogleFonts.balooBhai2(
+                fontSize: 12,
+                color: const Color(0xFF6D9773),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: GoogleFonts.balooBhai2(
-            fontSize: 12,
-            color: const Color(0xFF6D9773),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

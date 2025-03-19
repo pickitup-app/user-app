@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pickitup/components/bottom_navigation_bar.dart' as custom_nav;
 import '../services/api_service.dart';
-import '../screens/edit_profile.dart'; // Pastikan Anda mengimpor halaman edit profile
+import '../screens/edit_profile.dart'; // Import halaman edit profile
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -43,6 +43,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Using a constant for additional bottom margin to avoid overlap with navbar
+    const double extraBottomMargin = 20.0;
+
     return Scaffold(
       backgroundColor: Color(0xFFF1FCE4),
       body: isLoading
@@ -50,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
           : errorMessage.isNotEmpty
               ? Center(child: Text(errorMessage))
               : SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: extraBottomMargin),
                   child: Column(
                     children: [
                       // Header Section with Semi-Circle Background
@@ -194,7 +198,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     _buildTextField(
                                       'Subscription Status',
-                                      // Check if is_subscribed equals 1 instead of true.
                                       profileData?['is_subscribed'] == 1
                                           ? 'Active'
                                           : 'Not Subscribed',
@@ -274,7 +277,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                      )
+                      ),
+                      // Extra bottom spacer to ensure content is not hidden behind navbar
+                      SizedBox(height: extraBottomMargin),
                     ],
                   ),
                 ),

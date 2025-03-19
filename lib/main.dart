@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:pickitup/screens/articles_page.dart';
 import 'package:pickitup/screens/become_a_member.dart';
 import 'package:pickitup/screens/chat_expirio.dart';
+import 'package:pickitup/screens/claim_redeem_details_page.dart';
+import 'package:pickitup/screens/my_points_page.dart';
 import 'package:pickitup/screens/pickup_schedule.dart';
 import 'package:pickitup/screens/profile_page.dart';
+import 'package:pickitup/screens/single_article_page.dart';
 import 'package:pickitup/screens/urgent_pickup_page.dart';
 import 'package:pickitup/screens/drop_off_page.dart';
 import 'package:pickitup/screens/login_page.dart';
@@ -49,6 +53,12 @@ class MyApp extends StatelessWidget {
         '/scan': (context) => ScanPage(), // Halaman scan
         '/urgent_pickup': (context) =>
             UrgentPickUpPage(), // Halaman urgent pickup
+        '/my-points': (context) => MyPointsPage(), // Halaman profile
+        '/claim-redeem': (context) =>
+            ClaimRedeemDetailsPage(), // Halaman profile
+        '/articles': (context) => ArticlesPage(), // Halaman artikel
+        '/articles-details': (context) =>
+            SingleArticlePage(), // Halaman detail artikel
       },
     );
   }
